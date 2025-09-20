@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rezervă o cameră</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col items-center">
+    <!-- Bara de navigare, la fel ca pe pagina index.html -->
+    <nav class="bg-white shadow-lg w-full">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-gray-800">Hotel Finder</a>
+            <div class="flex items-center space-x-4">
+                <a href="index.html"
+                    class="px-3 py-2 text-gray-700 hover:text-blue-500 rounded-md text-sm font-medium">Acasa</a>
+                <a href="rezervare.html"
+                    class="px-3 py-2 text-gray-700 hover:text-blue-500 rounded-md text-sm font-medium">Rezerva</a>
+                <a href="login.html"
+                    class="px-3 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded-md text-sm font-medium">Admin
+                    Login</a>
+            </div>
+        </div>
+    </nav>
+    <main class="container mx-auto mt-8 flex-grow">
+        <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl mx-auto">
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Completează rezervarea</h1>
+            <p class="text-center text-gray-600 mb-6">Hotelul selectat: <span id="hotel-name"
+                    class="font-semibold text-blue-500"></span></p>
+
+            <form id="reservation-form" class="space-y-4">
+                <div>
+                    <label for="name" class="block text-gray-700 text-sm font-medium mb-1">Nume complet:</label>
+                    <input type="text" id="name" name="name" placeholder="John Doe"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
+                </div>
+                <div>
+                    <label for="email" class="block text-gray-700 text-sm font-medium mb-1">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="john.doe@example.com"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
+                </div>
+                <div>
+                    <label for="phone" class="block text-gray-700 text-sm font-medium mb-1">Număr de telefon:</label>
+                    <input type="tel" id="phone" name="phone" placeholder="07xxxxxxxx"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
+                </div>
+                <div>
+                    <label for="check-in" class="block text-gray-700 text-sm font-medium mb-1">Data Check-in:</label>
+                    <input type="date" id="check-in" name="check-in"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
+                </div>
+                <div>
+                    <label for="check-out" class="block text-gray-700 text-sm font-medium mb-1">Data Check-out:</label>
+                    <input type="date" id="check-out" name="check-out"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
+                </div>
+                <div id="message-container" class="mt-4 text-center text-red-500"></div>
+                <button type="submit"
+                    class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">Trimite
+                    Rezervarea</button>
+            </form>
+        </div>
+    </main>
+
+    <script type="module">
+        // Aici va fi logica JavaScript
+        const hotelNameElement = document.getElementById('hotel-name');
+        const form = document.getElementById('reservation-form');
+        const messageContainer = document.getElementById('message-container');
+
+        // Funcție pentru a afișa mesaje în containerul dedicat
+        function showMessage(message, isError = false) {
+            messageContainer.textContent = message;
+            messageContainer.className = `mt-4 text-center font-medium ${isError ? 'text-red-500' : 'text-green-500'}`;
+        }
+
+        // Preluăm ID-ul hotelului din URL (ex: rezervare.html?hotel_id=1)
+        const urlParams = new URLSearchParams(window.location.search);
+        const hotelId = urlParams.get('hotel_id');
+
+        // Logica pentru a obține numele hotelului pe baza ID-ului
+        // Momentan folosim date statice pentru demonstrație
+        const hotels = {
+            1: "Grand Palace",
+            2: "Seaview Resort",
+            3: "Mountain Hideaway"
+        };
+
+        if (hotelId && hotels[hotelId]) {
+            hotelNameElement.textContent = hotels[hotelId];
+        } else {
+            hotelNameElement.textContent = "Hotel necunoscut";
+            showMessage("Hotelul selectat nu a fost găsit. Te rugăm să te întorci la pagina principală.", true);
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Oprim reîncărcarea paginii
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // Validare simplă
+            if (!data.name || !data.email || !data.phone || !data['check-in'] || !data['check-out']) {
+                showMessage("Toate câmpurile sunt obligatorii!", true);
+                return;
+            }
+
+            showMessage("Trimiterea rezervării...", false);
+
+            // Aici va fi codul pentru a trimite datele către un script PHP
+            // care va salva informațiile în baza de date.
+            // Ex:
+            // const response = await fetch('api/save_reservation.php', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({ ...data, hotelId })
+            // });
+            // const result = await response.json();
+            // if (result.success) {
+            //     showMessage("Rezervare trimisă cu succes! Vei primi un email de confirmare.", false);
+            //     form.reset();
+            // } else {
+            //     showMessage("A apărut o eroare la trimiterea rezervării.", true);
+            // }
+
+            // Placeholder pentru confirmare
+            setTimeout(() => {
+                showMessage("Rezervare trimisă cu succes! O vom procesa în curând.", false);
+                form.reset();
+            }, 2000);
+        });
+    </script>
+</body>
+
+</html>
