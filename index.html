@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="ro">
 
@@ -6,95 +9,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Găsește Hotelul Perfect</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
-
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f0f4f8;
+            color: #1a202c;
         }
     </style>
 </head>
 
 <body class="bg-gray-100 min-h-screen flex flex-col">
-    <nav class="bg-white shadow-lg w-full">
-        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-gray-800">Hotel Bens</a>
-            <div class="flex items-center space-x-4">
-                <a href="#"
-                    class="px-3 py-2 text-blue-500 hover:text-blue-600 rounded-md text-sm font-medium">Hoteluri</a>
-                <a href="login.html"
-                    class="px-3 py-2 text-gray-700 hover:text-blue-500 rounded-md text-sm font-medium">Administrator</a>
-            </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-md py-4">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <a href="index.html" class="text-3xl font-bold text-indigo-600">Hotel App</a>
+            <nav>
+                <a href="rezervare.html" class="text-gray-600 hover:text-indigo-600 font-medium px-4">Rezervă acum</a>
+                <a href="login.html" class="text-gray-600 hover:text-indigo-600 font-medium px-4">Login
+                    Administrator</a>
+            </nav>
         </div>
-    </nav>
-    <main class="container mx-auto mt-8 flex-grow p-4">
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto mt-10 px-6 flex-grow">
         <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Găsește Hotelul Perfect</h1>
-        <div id="hotels-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Hotelurile vor fi inserate aici de JavaScript -->
+        <p class="text-center text-gray-600 mb-12">Explorează colecția noastră de hoteluri și rezervă-ți vacanța de vis!
+        </p>
+
+        <!-- Dynamic Hotel List -->
+        <div id="hotels-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Hotel cards will be dynamically inserted here -->
         </div>
-        <div id="loading-message" class="text-center p-8 text-gray-500">
-            Se încarcă hotelurile...
+
+        <!-- Message Box -->
+        <div id="message-box"
+            class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-white text-center py-3 px-6 rounded-lg shadow-lg z-50 transform scale-0 transition-transform duration-300 ease-in-out">
+            <span id="message-text" class="text-gray-800 font-medium"></span>
         </div>
+
     </main>
+
+    <!-- Footer -->
+    <footer class="bg-white shadow-md mt-10 py-4">
+        <div class="container mx-auto text-center text-gray-500 px-6">
+            <p>&copy; 2024 Hotel App. Toate drepturile rezervate.</p>
+        </div>
+    </footer>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const hotelsContainer = document.getElementById('hotels-container');
-            const loadingMessage = document.getElementById('loading-message');
-
-            // Functie pentru a prelua hotelurile din baza de date
-            async function fetchHotels() {
-                try {
-                    const response = await fetch('api/get_hotels.php');
-                    if (!response.ok) {
-                        throw new Error('Eroare la preluarea datelor.');
-                    }
-                    const hotels = await response.json();
-                    renderHotels(hotels);
-                } catch (error) {
-                    console.error('Eroare:', error);
-                    hotelsContainer.innerHTML = `<div class="col-span-full text-center p-8 text-red-500">Nu am putut încărca hotelurile. Te rog, încearcă din nou mai târziu.</div>`;
-                } finally {
-                    loadingMessage.style.display = 'none';
-                }
-            }
-
-            // Functie pentru a crea cardul unui hotel
-            function createHotelCard(hotel) {
-                const card = document.createElement('div');
-                card.className = 'bg-white rounded-xl shadow-lg overflow-hidden transition-transform transform hover:scale-105';
-                card.innerHTML = `
-                    <img src="${hotel.imagine}" alt="${hotel.nume}" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <div class="flex justify-between items-center mb-2">
-                            <h2 class="text-xl font-bold text-gray-800">${hotel.nume}</h2>
-                            <span class="text-yellow-400 font-bold">${hotel.rating} / 5</span>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4">${hotel.descriere}</p>
-                        <a href="rezervare.html?hotel_id=${hotel.id}" class="block w-full text-center px-4 py-2 bg-blue-500 text-white rounded-md font-medium hover:bg-blue-600 transition-colors">
-                            Rezervă acum
-                        </a>
-                    </div>
-                `;
-                return card;
-            }
-
-            // Functie pentru a afisa toate hotelurile
-            function renderHotels(hotels) {
-                hotelsContainer.innerHTML = '';
-                if (hotels.length === 0) {
-                    hotelsContainer.innerHTML = `<div class="col-span-full text-center p-8 text-gray-500">Momentan nu există hoteluri disponibile.</div>`;
-                    return;
-                }
-                hotels.forEach(hotel => {
-                    const card = createHotelCard(hotel);
-                    hotelsContainer.appendChild(card);
-                });
-            }
-
-            // Incarca hotelurile la incarcarea paginii
             fetchHotels();
         });
+
+        async function fetchHotels() {
+            try {
+                const response = await fetch('api/get_hotels.php');
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                const hotelsContainer = document.getElementById('hotels-container');
+                hotelsContainer.innerHTML = ''; // Curăță containerul
+
+                if (data.length === 0) {
+                    hotelsContainer.innerHTML = '<p class="text-center text-gray-500 text-lg col-span-full">Nu există hoteluri disponibile.</p>';
+                    return;
+                }
+
+                data.forEach(hotel => {
+                    const hotelCard = `
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105">
+                            <img src="${hotel.image_url}" alt="${hotel.name}" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 class="text-xl font-semibold text-gray-900">${hotel.name}</h3>
+                                    <span class="text-yellow-500 font-bold">${hotel.price} RON / noapte</span>
+                                </div>
+                                <p class="text-gray-600 text-sm mb-4">${hotel.location}</p>
+                                <p class="text-gray-700 text-base mb-6">${hotel.description}</p>
+                                <a href="rezervare.html?hotel_id=${hotel.id}" class="block w-full text-center bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 transition-colors duration-300">
+                                    Rezervă acum
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    hotelsContainer.innerHTML += hotelCard;
+                });
+            } catch (error) {
+                console.error("Eroare la încărcarea hotelurilor:", error);
+                const hotelsContainer = document.getElementById('hotels-container');
+                hotelsContainer.innerHTML = `<p class="text-center text-red-500 text-lg col-span-full">Eroare la încărcarea datelor: ${error.message}</p>`;
+            }
+        }
     </script>
 </body>
 
