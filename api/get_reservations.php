@@ -1,38 +1,43 @@
 <?php
 header('Content-Type: application/json');
+
+// Afișare erori pentru debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once 'db_config.php';
 
-// Verifică conexiunea
-if ($conn->connect_error) {
-    echo json_encode(["error" => "Conexiune eșuată: " . $conn->connect_error]);
-    exit();
+// Dacă nu există conexiune, trimite răspuns JSON cu eroare
+if (!isset($conn) || $conn->connect_error) {
+    echo json_encode(["status" => "error", "message" => "Conexiunea la baza de date a eșuat."]);
+    exit;
 }
 
-// Interogare SQL pentru a prelua rezervările, împreună cu numele hotelului
-$sql = "SELECT 
-            r.id, 
-            h.nume AS nume_hotel, 
-            r.nume_client, 
-            r.email_client, 
-            r.data_cazare, 
-            r.data_plecare,
-            r.data_rezervarii
-        FROM 
-            rezervari r
-        JOIN 
-            hoteluri h ON r.hotel_id = h.id
-        ORDER BY 
-            r.data_rezervarii DESC";
+// Query pentru rezervări + numele hotelului
+$sql = "SELECT r.id, h.name AS hotel_name, r.client_name, r.client_email, 
+               r.checkin_date, r.checkout_date
+        FROM reservations r
+        INNER JOIN hotels h ON r.hotel_id = h.id
+        ORDER BY r.created_at DESC";
 
 $result = $conn->query($sql);
 
-$reservations = [];
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $reservations[] = $row;
-    }
+// Dacă interogarea a eșuat, returnează mesaj de eroare
+if (!$result) {
+    echo json_encode(["status" => "error", "message" => "Eroare SQL: " . $conn->error]);
+    exit;
 }
 
-$conn->close();
+// Construiește array-ul cu rezervări
+$reservations = [];
+while ($row = $result->fetch_assoc()) {
+    $reservations[] = $row;
+}
 
-echo json_encode($reservations);
+// Returnează datele în format JSON
+echo json_encode([
+    "status" => "success",
+    "data" => $reservations
+]);
+
+$conn->close();

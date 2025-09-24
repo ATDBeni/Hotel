@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ro">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,23 +9,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6;
         }
     </style>
 </head>
+
 <body class="bg-gray-100 min-h-screen flex flex-col items-center">
 
     <!-- Navigare -->
     <nav class="w-full bg-white shadow-md">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="../admin_dashboard.html" class="flex items-center space-x-2 text-gray-800 hover:text-blue-600 transition-colors">
+            <a href="index.html"
+                class="flex items-center space-x-2 text-gray-800 hover:text-blue-600 transition-colors">
                 <i class="fas fa-arrow-left"></i>
                 <span class="font-semibold">Inapoi la Dashboard</span>
             </a>
             <h1 class="text-2xl font-bold text-gray-800">Adaugă Hotel</h1>
-            <a href="../api/logout.php" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-lg">
+            <a href="../api/logout.php"
+                class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-lg">
                 Deconectare
             </a>
         </div>
@@ -36,25 +41,36 @@
         <form id="addHotelForm" class="space-y-6">
             <div>
                 <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Nume Hotel</label>
-                <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
+                <input type="text" id="name" name="name"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    required>
             </div>
             <div>
                 <label for="location" class="block text-gray-700 text-sm font-medium mb-2">Locație</label>
-                <input type="text" id="location" name="location" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
+                <input type="text" id="location" name="location"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    required>
             </div>
             <div>
                 <label for="description" class="block text-gray-700 text-sm font-medium mb-2">Descriere</label>
-                <textarea id="description" name="description" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required></textarea>
+                <textarea id="description" name="description" rows="4"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    required></textarea>
             </div>
             <div>
                 <label for="image_url" class="block text-gray-700 text-sm font-medium mb-2">URL Imagine</label>
-                <input type="url" id="image_url" name="image_url" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
+                <input type="url" id="image_url" name="image_url"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    required>
             </div>
             <div>
                 <label for="price" class="block text-gray-700 text-sm font-medium mb-2">Preț pe noapte</label>
-                <input type="number" id="price" name="price" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
+                <input type="number" id="price" name="price"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    required>
             </div>
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors shadow-lg">
+            <button type="submit"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors shadow-lg">
                 Adaugă Hotel
             </button>
         </form>
@@ -63,7 +79,7 @@
     </div>
 
     <script>
-        document.getElementById('addHotelForm').addEventListener('submit', async function(e) {
+        document.getElementById('addHotelForm').addEventListener('submit', async function (e) {
             e.preventDefault();
             const form = e.target;
             const formData = new FormData(form);
@@ -108,4 +124,5 @@
         });
     </script>
 </body>
+
 </html>
