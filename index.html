@@ -26,7 +26,7 @@ session_start();
         <div class="container mx-auto flex justify-between items-center px-6">
             <a href="index.html" class="text-3xl font-bold text-indigo-600">Hotel App</a>
             <nav>
-                <a href="rezervare.html" class="text-gray-600 hover:text-indigo-600 font-medium px-4">Rezervă acum</a>
+                <!-- <a href="rezervare.html" class="text-gray-600 hover:text-indigo-600 font-medium px-4">Rezervă acum</a> -->
                 <a href="login.html" class="text-gray-600 hover:text-indigo-600 font-medium px-4">Login
                     Administrator</a>
             </nav>
@@ -58,8 +58,8 @@ session_start();
             <p>&copy; 2024 Hotel App. Toate drepturile rezervate.</p>
         </div>
     </footer>
-
     <script>
+
         document.addEventListener('DOMContentLoaded', () => {
             fetchHotels();
         });
@@ -81,32 +81,64 @@ session_start();
                     return;
                 }
 
+                const truncateLimit = 150; // Limita de caractere pentru descriere
+
                 data.forEach(hotel => {
-                    const hotelCard = `
-                        <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105">
-                            <img src="${hotel.image_url}" alt="${hotel.name}" class="w-full h-48 object-cover">
-                            <div class="p-6">
-                                <div class="flex justify-between items-center mb-2">
-                                    <h3 class="text-xl font-semibold text-gray-900">${hotel.name}</h3>
-                                    <span class="text-yellow-500 font-bold">${hotel.price} RON / noapte</span>
-                                </div>
-                                <p class="text-gray-600 text-sm mb-4">${hotel.location}</p>
-                                <p class="text-gray-700 text-base mb-6">${hotel.description}</p>
-                                <a href="rezervare.html?hotel_id=${hotel.id}" class="block w-full text-center bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 transition-colors duration-300">
-                                    Rezervă acum
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                    hotelsContainer.innerHTML += hotelCard;
+                    const description = hotel.description;
+                    const needsTruncation = description.length > truncateLimit;
+                    const truncatedDescription = needsTruncation
+                        ? description.substring(0, truncateLimit) + '...'
+                        : description;
+
+                    const hotelCard = document.createElement('div');
+                    hotelCard.className = "bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105";
+
+                    hotelCard.innerHTML = `
+                <img src="${hotel.image_url}" alt="${hotel.name}" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-xl font-semibold text-gray-900">${hotel.name}</h3>
+                        <span class="text-yellow-500 font-bold">${hotel.price} RON / noapte</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">${hotel.location}</p>
+                    <p class="text-gray-700 text-base mb-6">${truncatedDescription}</p>
+                    ${needsTruncation ? `<button class="read-more-btn text-indigo-600 font-medium hover:underline focus:outline-none">Citește mai mult</button>` : ''}
+                    <a href="rezervare.html?hotel_id=${hotel.id}" class="block w-full text-center bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 transition-colors duration-300 mt-4">
+                        Rezervă acum
+                    </a>
+                </div>
+            `;
+
+                    hotelsContainer.appendChild(hotelCard);
+
+                    if (needsTruncation) {
+                        const readMoreBtn = hotelCard.querySelector('.read-more-btn');
+                        const descriptionParagraph = hotelCard.querySelector('p:last-of-type');
+
+                        readMoreBtn.addEventListener('click', () => {
+                            if (descriptionParagraph.textContent.endsWith('...')) {
+                                descriptionParagraph.textContent = description;
+                                readMoreBtn.textContent = 'Citește mai puțin';
+                            } else {
+                                descriptionParagraph.textContent = truncatedDescription;
+                                readMoreBtn.textContent = 'Citește mai mult';
+                            }
+                        });
+                    }
                 });
+
             } catch (error) {
                 console.error("Eroare la încărcarea hotelurilor:", error);
                 const hotelsContainer = document.getElementById('hotels-container');
                 hotelsContainer.innerHTML = `<p class="text-center text-red-500 text-lg col-span-full">Eroare la încărcarea datelor: ${error.message}</p>`;
             }
         }
+
     </script>
+
+
+
+
 </body>
 
 </html>
