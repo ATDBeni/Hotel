@@ -1,134 +1,111 @@
 <!DOCTYPE html>
 <html lang="ro">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adaugă un Hotel Nou</title>
+    <title>Adaugă Hotel</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
-
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8;
-        }
-
-        .container {
-            max-width: 800px;
+            background-color: #f3f4f6;
         }
     </style>
 </head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center">
 
-<body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
-    <nav class="bg-white shadow-lg w-full">
-        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold text-gray-800">Hotel Finder</a>
-            <div class="flex items-center space-x-4">
-                <a href="admin_dashboard.html"
-                    class="px-3 py-2 text-gray-700 hover:text-blue-500 rounded-md text-sm font-medium">Tablou de
-                    Bord</a>
-                <button id="logout-btn"
-                    class="px-3 py-2 bg-red-500 text-white rounded-md text-sm font-medium hover:bg-red-600 transition-colors">Deconectare</button>
-            </div>
+    <!-- Navigare -->
+    <nav class="w-full bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="../admin_dashboard.html" class="flex items-center space-x-2 text-gray-800 hover:text-blue-600 transition-colors">
+                <i class="fas fa-arrow-left"></i>
+                <span class="font-semibold">Inapoi la Dashboard</span>
+            </a>
+            <h1 class="text-2xl font-bold text-gray-800">Adaugă Hotel</h1>
+            <a href="../api/logout.php" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-lg">
+                Deconectare
+            </a>
         </div>
     </nav>
-    <main class="container mx-auto mt-8 flex-grow p-4">
-        <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Adaugă un Hotel Nou</h1>
-        <div class="bg-white rounded-xl shadow-lg p-6 w-full">
-            <form id="add-hotel-form" class="space-y-6">
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700">Nume Hotel</label>
-                    <input type="text" id="name" name="name" required
-                        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-                <div>
-                    <label for="location" class="block text-sm font-medium text-gray-700">Locație</label>
-                    <input type="text" id="location" name="location" required
-                        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-                <div>
-                    <label for="description" class="block text-sm font-medium text-gray-700">Descriere</label>
-                    <textarea id="description" name="description" rows="4" required
-                        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
-                </div>
-                <div>
-                    <label for="image_url" class="block text-sm font-medium text-gray-700">URL Imagine</label>
-                    <input type="url" id="image_url" name="image_url" required
-                        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-                <div>
-                    <label for="price" class="block text-sm font-medium text-gray-700">Preț pe Noapte (€)</label>
-                    <input type="number" id="price" name="price" required min="0" step="any"
-                        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                </div>
-                <button type="submit"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
-                    Adaugă Hotel
-                </button>
-                <div id="message" class="text-center mt-4"></div>
-            </form>
-        </div>
-    </main>
+
+    <!-- Container Formular -->
+    <div class="w-full max-w-2xl bg-white shadow-xl rounded-lg p-8 mt-10">
+        <h2 class="text-xl font-bold text-gray-800 text-center mb-6">Completează detaliile noului hotel</h2>
+        <form id="addHotelForm" class="space-y-6">
+            <div>
+                <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Nume Hotel</label>
+                <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
+            </div>
+            <div>
+                <label for="location" class="block text-gray-700 text-sm font-medium mb-2">Locație</label>
+                <input type="text" id="location" name="location" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
+            </div>
+            <div>
+                <label for="description" class="block text-gray-700 text-sm font-medium mb-2">Descriere</label>
+                <textarea id="description" name="description" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required></textarea>
+            </div>
+            <div>
+                <label for="image_url" class="block text-gray-700 text-sm font-medium mb-2">URL Imagine</label>
+                <input type="url" id="image_url" name="image_url" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
+            </div>
+            <div>
+                <label for="price" class="block text-gray-700 text-sm font-medium mb-2">Preț pe noapte</label>
+                <input type="number" id="price" name="price" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors shadow-lg">
+                Adaugă Hotel
+            </button>
+        </form>
+
+        <div id="statusMessage" class="mt-4 text-center font-semibold"></div>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const logoutButton = document.getElementById('logout-btn');
-            logoutButton.addEventListener('click', async () => {
-                try {
-                    const response = await fetch('api/logout.php', { method: 'POST' });
-                    const result = await response.json();
-                    if (result.status === 'success') {
-                        window.location.href = 'login.html';
-                    } else {
-                        // Afișează un mesaj de eroare dacă deconectarea eșuează
-                        alert(result.message);
-                    }
-                } catch (error) {
-                    console.error('Eroare la deconectare:', error);
-                    alert('A apărut o eroare la deconectare. Vă rugăm să încercați din nou.');
+        document.getElementById('addHotelForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            const statusMessage = document.getElementById('statusMessage');
+
+            statusMessage.textContent = 'Se adaugă hotelul...';
+            statusMessage.className = 'mt-4 text-center font-semibold text-gray-600';
+
+            try {
+                const response = await fetch('api/add_hotel.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            });
 
-            const addHotelForm = document.getElementById('add-hotel-form');
-            const messageDiv = document.getElementById('message');
-
-            addHotelForm.addEventListener('submit', async function (event) {
-                event.preventDefault(); // Previne reîncărcarea paginii
-
-                // Clear any previous messages
-                messageDiv.textContent = '';
-                messageDiv.className = '';
-
-                const formData = new FormData(addHotelForm);
-
-                try {
-                    const response = await fetch('api/add_hotel.php', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    // Parsează răspunsul ca JSON
+                // Verificăm dacă răspunsul este JSON înainte de a încerca să-l parsăm
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
                     const result = await response.json();
-
-                    if (result.status === 'success') {
-                        messageDiv.textContent = result.message;
-                        messageDiv.className = 'text-center mt-4 text-green-600 font-bold';
-                        addHotelForm.reset(); // Resetează formularul
+                    if (result.success) {
+                        statusMessage.textContent = result.message;
+                        statusMessage.className = 'mt-4 text-center font-semibold text-green-600';
+                        form.reset(); // Resetăm formularul după succes
                     } else {
-                        // Afișează mesajul de eroare returnat de PHP
-                        messageDiv.textContent = 'Eroare la adăugarea hotelului: ' + result.message;
-                        messageDiv.className = 'text-center mt-4 text-red-600 font-bold';
+                        statusMessage.textContent = result.message;
+                        statusMessage.className = 'mt-4 text-center font-semibold text-red-600';
                     }
-                } catch (error) {
-                    // Gestionează erorile de rețea
-                    console.error('Eroare la adăugarea hotelului:', error);
-                    messageDiv.textContent = 'A apărut o eroare de rețea. Vă rugăm să verificați conexiunea la server.';
-                    messageDiv.className = 'text-center mt-4 text-red-600 font-bold';
+                } else {
+                    // Dacă răspunsul nu este JSON, afișăm conținutul brut pentru a depana
+                    const text = await response.text();
+                    statusMessage.textContent = `Eroare: Răspunsul serverului nu este JSON. Răspuns: ${text}`;
+                    statusMessage.className = 'mt-4 text-center font-semibold text-red-600';
                 }
-            });
+            } catch (error) {
+                console.error('Eroare la adăugarea hotelului:', error);
+                statusMessage.textContent = `Eroare la adăugarea hotelului: ${error.message}`;
+                statusMessage.className = 'mt-4 text-center font-semibold text-red-600';
+            }
         });
     </script>
 </body>
-
 </html>
