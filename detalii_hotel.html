@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalii Hotel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom, #f9fafb, #e5e7eb);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+    <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/70 shadow-md">
+        <div class="container mx-auto flex justify-between items-center px-6 py-4">
+            <a href="index.html"
+                class="text-3xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">Hotel
+                Finder</a>
+            <a href="index.html" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 font-semibold">
+                Înapoi
+            </a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 mt-28 flex-grow">
+        <div id="hotel-details" class="bg-white rounded-2xl shadow-lg overflow-hidden max-w-3xl mx-auto">
+            <!-- Detaliile hotelului vor fi încărcate din JS -->
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const hotelId = params.get('id');
+            if (!hotelId) {
+                document.getElementById('hotel-details').innerHTML =
+                    '<p class="text-center text-red-500 p-6">ID hotel lipsă.</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`api/get_hotels.php`);
+                const data = await response.json();
+
+                if (data.error) throw new Error(data.error);
+
+                const hotel = data.find(h => h.id === hotelId);
+                if (!hotel) {
+                    document.getElementById('hotel-details').innerHTML =
+                        '<p class="text-center text-gray-500 p-6">Hotelul nu a fost găsit.</p>';
+                    return;
+                }
+
+                document.getElementById('hotel-details').innerHTML = `
+                    <img src="${hotel.image_url}" alt="${hotel.name}" class="w-full h-80 object-cover">
+                    <div class="p-8">
+                        <h1 class="text-3xl font-bold text-gray-900 mb-2">${hotel.name}</h1>
+                        <p class="text-gray-600 text-lg mb-4">${hotel.location}</p>
+                        <p class="text-gray-700 mb-6">${hotel.description}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-semibold text-indigo-600">${hotel.price} RON / noapte</span>
+                            <a href="rezervare.html?hotel_id=${hotel.id}" 
+                               class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-xl shadow-md hover:shadow-xl transition">
+                               Rezervă acum
+                            </a>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('hotel-details').innerHTML =
+                    `<p class="text-center text-red-500 p-6">Eroare: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+
+</html>
