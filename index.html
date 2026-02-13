@@ -16,7 +16,7 @@ session_start();
             background: linear-gradient(to bottom, #f9fafb, #e5e7eb);
         }
 
-        /* Animatie pentru card */
+
         .hotel-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -26,7 +26,7 @@ session_start();
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         }
 
-        /* Toast animatie */
+
         .toast {
             transform: translateY(120%);
             transition: transform 0.4s ease;
@@ -40,7 +40,7 @@ session_start();
 
 <body class="flex flex-col min-h-screen">
 
-    <!-- Header sticky cu glassmorphism -->
+
     <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/70 shadow-md">
         <div class="container mx-auto flex justify-between items-center px-6 py-4">
             <a href="index.html"
@@ -63,12 +63,12 @@ session_start();
             Alege din cele mai bune hoteluri, cu un singur click.
         </p>
 
-        <!-- Loader -->
+
         <div id="loader" class="flex justify-center items-center py-20">
             <div class="w-12 h-12 border-4 border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
         </div>
 
-        <!-- Lista Hoteluri -->
+
         <div id="hotels-container" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
 
         <!-- Toast message

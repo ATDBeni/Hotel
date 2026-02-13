@@ -75,7 +75,7 @@
                     </tr>
                 </thead>
                 <tbody id="reservations-table-body" class="bg-white divide-y divide-gray-200">
-                    <!-- Reservation rows will be injected here by JavaScript -->
+                    
                 </tbody>
             </table>
         </div>
@@ -147,7 +147,7 @@
                     const result = await response.json();
 
                     if (result.status === 'success') {
-                        fetchReservations(); // Refresh the table
+                        fetchReservations();
                         document.getElementById('message').textContent = 'Rezervare anulată cu succes!';
                         document.getElementById('message').className = 'text-center mt-4 text-green-600 font-bold';
                     } else {
@@ -162,7 +162,7 @@
             }
         }
 
-        // Logout functionality
+       
         document.getElementById('logout-btn').addEventListener('click', async () => {
             try {
                 const response = await fetch('api/logout.php', { method: 'POST' });

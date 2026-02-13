@@ -19,7 +19,7 @@
 
 <body class="bg-gray-100 min-h-screen flex flex-col items-center">
 
-    <!-- Navigare -->
+
     <nav class="w-full bg-white shadow-md">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <a href="admin_dashboard.html"
@@ -35,7 +35,7 @@
         </div>
     </nav>
 
-    <!-- Container Formular -->
+
     <div class="w-full max-w-2xl bg-white shadow-xl rounded-lg p-8 mt-10">
         <h2 class="text-xl font-bold text-gray-800 text-center mb-6">Completează detaliile noului hotel</h2>
         <form id="addHotelForm" class="space-y-6">
@@ -98,7 +98,6 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                // Verificăm dacă răspunsul este JSON înainte de a încerca să-l parsăm
                 const contentType = response.headers.get("content-type");
                 if (contentType && contentType.indexOf("application/json") !== -1) {
                     const result = await response.json();
@@ -111,7 +110,7 @@
                         statusMessage.className = 'mt-4 text-center font-semibold text-red-600';
                     }
                 } else {
-                    // Dacă răspunsul nu este JSON, afișăm conținutul brut pentru a depana
+
                     const text = await response.text();
                     statusMessage.textContent = `Eroare: Răspunsul serverului nu este JSON. Răspuns: ${text}`;
                     statusMessage.className = 'mt-4 text-center font-semibold text-red-600';

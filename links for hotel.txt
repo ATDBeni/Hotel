@@ -1,0 +1,15 @@
+http://localhost/Hotel/index.html
+http://localhost/Hotel/admin_dashboard.html
+
+
+
+http://localhost/phpmyadmin/index.php?route=/database/structure&db=hotel_app_db
+
+user si parola
+
+user:admin
+pass: password123
+
+
+2:58
+3:49

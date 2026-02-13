@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 require_once 'db_config.php';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Verificăm dacă toate câmpurile necesare sunt trimise
+    
     if (!empty($_POST['hotel_id']) && !empty($_POST['nume_client']) && !empty($_POST['email_client']) && !empty($_POST['data_cazare']) && !empty($_POST['data_plecare'])) {
         
         $hotel_id = $_POST['hotel_id'];
@@ -18,7 +18,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $checkin_date = $_POST['data_cazare'];
         $checkout_date = $_POST['data_plecare'];
 
-        // Validare simplă: data check-in < data check-out
         if (strtotime($checkin_date) >= strtotime($checkout_date)) {
             http_response_code(400);
             echo json_encode(["status" => "error", "message" => "Data de plecare trebuie să fie după data de cazare."]);
