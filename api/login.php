@@ -1,28 +1,45 @@
 <?php
-
 session_start();
-
-
 header('Content-Type: application/json');
+require_once 'db.php';
 
-$admin_username = "admin";
-$admin_password = "password123";
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success' => false, 'message' => 'Metodă invalidă.']);
+    exit;
+}
 
+$email    = trim($_POST['email']    ?? '');
+$password = $_POST['password']      ?? '';
+$role     = $_POST['role']          ?? 'client';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
+if (!$email || !$password) {
+    echo json_encode(['success' => false, 'message' => 'Completează toate câmpurile.']);
+    exit;
+}
 
-    // Verificam credențialele
-    if ($username === $admin_username && $password === $admin_password) {
+try {
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ? AND role = ?');
+    $stmt->execute([$email, $role]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $_SESSION['loggedin'] = true;
-        echo json_encode(["status" => "success", "message" => "Autentificare reusita!"]);
-    } else {
-        
-        echo json_encode(["status" => "error", "message" => "Nume de utilizator sau parolă incorectă."]);
+    if (!$user || !password_verify($password, $user['password'])) {
+        echo json_encode(['success' => false, 'message' => 'Email sau parolă incorectă.']);
+        exit;
     }
-} else {
-   
-    echo json_encode(["status" => "error", "message" => "Metodă de cerere invalidă."]);
+
+    $_SESSION['user_id']   = $user['id'];
+    $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
+    $_SESSION['user_email']= $user['email'];
+    $_SESSION['role']      = $user['role'];
+
+    // Actualizare last_login
+    $pdo->prepare('UPDATE users SET last_login = NOW() WHERE id = ?')->execute([$user['id']]);
+
+    echo json_encode([
+        'success' => true,
+        'role'    => $user['role'],
+        'name'    => $user['first_name']
+    ]);
+} catch (PDOException $e) {
+    echo json_encode(['success' => false, 'message' => 'Eroare de server.']);
 }

@@ -1,40 +1,35 @@
 <?php
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+require_once 'db.php';
 
-
-require_once 'db_config.php';
-
-$hotels = [];
-$conn = null;
+$id = intval($_GET['id'] ?? 0);
+if (!$id) { echo json_encode(['error' => 'ID invalid']); exit; }
 
 try {
+    $stmt = $pdo->prepare("
+        SELECT h.*,
+               COALESCE(AVG(r.rating), NULL) AS avg_rating,
+               COUNT(r.id) AS review_count
+        FROM hotels h
+        LEFT JOIN reviews r ON r.hotel_id = h.id
+        WHERE h.id = ?
+        GROUP BY h.id
+    ");
+    $stmt->execute([$id]);
+    $hotel = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+    if (!$hotel) { echo json_encode(['error' => 'Hotel negăsit']); exit; }
 
-    
-    if ($conn->connect_error) {
-        throw new Exception("Conexiune eșuată: " . $conn->connect_error);
+    // Fetch images (din coloana image_url sau JSON)
+    $images = [];
+    if (!empty($hotel['image_url'])) {
+        $decoded = json_decode($hotel['image_url'], true);
+        if (is_array($decoded)) $images = $decoded;
+        else $images = [$hotel['image_url']];
     }
+    $hotel['images'] = $images;
 
-
-    $sql = "SELECT id, name, location, description, image_url, price FROM hotels";
-    $result = $conn->query($sql);
-
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $hotels[] = $row;
-        }
-    }
-
-
-    echo json_encode($hotels);
-} catch (Exception $e) {
-
-    echo json_encode(['error' => $e->getMessage()]);
-} finally {
-    if ($conn) {
-        $conn->close();
-    }
+    echo json_encode($hotel);
+} catch (PDOException $e) {
+    echo json_encode(['error' => 'Eroare server']);
 }
